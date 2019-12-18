@@ -12,10 +12,14 @@ Para poder ejecutar el programa y realizar pruebas sobre datos dummy en necesari
 
 Pasos para descargar y ejecutar el artefacto.
 ```sh
-debian@host$ git clone https://github.com/ArturoGonzalezBecerril/cifras_control.git
-debian@host$ cd EstadisticoDeFtes
-debian@host$ ./spark-submmit ServicioImpala.py --jars mysql-connector-java.jar
+debian@host$ git clone https://github.com/ArturoGonzalezBecerril/cifras_controlV2.git
+debian@host$ cd GeneradorMetricas
+debian@host$ oozie job --oozie http://IP_host:11000/oozie -config workflows/workflow.xml -run
 ```
+### También es posible lanzarlo desde la interfaz web en hue.
+[![N|Solid](https://i.ibb.co/WxkGLRx/oozie-cifras-control.png)](https://nodesource.com/products/nsolid)
+
+
 
 ### Estructura y definición del proyecto
 - Fuente
