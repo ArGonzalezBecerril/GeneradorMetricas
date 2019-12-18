@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<workflow-app xmlns="uri:oozie:workflow:0.5" name="App-GeneradorMetricas">
+		<start to="GeneradorMetricas" />
+		<action name="GeneradorMetricas">
+			<spark xmlns="uri:oozie:spark-action:0.1">
+				<job-tracker>${jobTracker}</job-tracker>
+				<name-node>${nameNode}</name-node>
+				<configuration>
+					<property>
+						<name>mapreduce.job.queuename</name>
+						<value>${queueName}</value>
+					</property>
+				</configuration>
+				<master>yarn</master>
+				<mode>cluster</mode>
+				<name>App-GeneradorMetricas</name>
+				<jar>${nameNode}/${workflowRoot}/${appDir}/lib/ServicioImpala.py</jar>
+				<spark-opts>
+					--queue ${queueName}
+					--num-executors 3
+					--executor-cores 1
+					--executor-memory 1g
+					--conf spark.yarn.executor.memoryOverhead=4000
+					--conf spark.yarn.maxAppAttempts=1
+				</spark-opts>
+				<arg>-e ${nom_esquema}</arg>
+				<arg>-t ${nom_tabla}</arg>
+			</spark>
+			<ok to="End" />
+			<error to="Envia-email" />
+		</action>
+		<action name="Envia-email">
+              <email xmlns="uri:oozie:email-action:0.2">
+                     <to>${destinatario}</to>
+                     <subject>ERROR al procesar la fuente ${nom_tabla}</subject>
+                       <body>
+                       	<![CDATA[
+                       	    <style>
+                       	    	table.redTable {
+										  border: 2px solid #A40808;
+										  background-color: #EEE7DB;
+										  width: 100%;
+										  border-collapse: collapse;
+										}
+										table.redTable td, table.redTable th {
+										  border: 1px solid #AAAAAA;
+										  padding: 3px 2px;
+										}
+										table.redTable tbody td {
+										  font-size: 13px;
+										}
+										table.redTable tr:nth-child(even) {
+										  background: #F5C8BF;
+										}
+										table.redTable thead {
+										  background: #A40808;
+										}
+										table.redTable thead th {
+										  font-size: 19px;
+										  font-weight: bold;
+										  color: #FFFFFF;
+										  text-align: center;
+										  border-left: 2px solid #A40808;
+										}
+										table.redTable thead th:first-child {
+										  border-left: none;
+										}
+                       	    </style>
+                       		<table class="redTable">
+							    <thead>
+							        <tr>
+							            <th>Esquema</th>
+							            <th>Tabla</th>
+							            <th>id_proceso</th>
+							        </tr>
+							    </thead>
+							    <tbody>
+							        <tr>
+							            <td>${nom_esquema}</td>
+							            <td>${nom_tabla}</td>
+							            <td>${wf:id()}</td>
+							        </tr>
+							    </tbody>
+							</table>
+						  ]]>
+                       </body>
+                       <content_type>text/html</content_type>
+              </email>
+            <ok to="kill" />
+            <error to="kill" />
+        </action>
+		
+	    <kill name="kill">
+            <message>Fallo al ejecutar el proceso, mensaje:[${wf:errorMessage(wf:lastErrorNode())}]</message>
+         </kill>
+		<end name="End" />
+	</workflow-app>

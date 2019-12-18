@@ -1,0 +1,18 @@
+***************************************************
+Nombre_script:Generador_de_insumos
+Fase_etl:     Extraccion
+Seccion_etl:  INICIO
+Fec_proceso:  10_12_2019
+Trace:        <traceback object at 0x7f2b571f6998>
+Valor:        AnalysisException: This Impala daemon is not ready to accept user requests. Status: Waiting for catalog update from the StateStore.
+
+Tipo:         <class 'impala.error.HiveServer2Error'>
+***************************************************
+Nombre_script:Generador_de_insumos
+Fase_etl:     Extraccion
+Seccion_etl:  INICIO
+Fec_proceso:  10_12_2019
+Trace:        <traceback object at 0x7f4f2a78a8c0>
+Valor:        AnalysisException: This Impala daemon is not ready to accept user requests. Status: Waiting for catalog update from the StateStore.
+
+Tipo:         <class 'impala.error.HiveServer2Error'>
